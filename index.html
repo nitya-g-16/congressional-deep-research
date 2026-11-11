@@ -545,10 +545,10 @@
 
         } else if (event.type === "context") {
           if (
-            runId &&
-            typeof showContext === "function"
+            Array.isArray(event.events) &&
+            typeof renderTimeline === "function"
           ) {
-            showContext(runId);
+            renderTimeline(event.events);
           }
 
         } else if (event.type === "activity") {

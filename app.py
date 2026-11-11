@@ -640,9 +640,18 @@ async def run(
 
     queue: asyncio.Queue = asyncio.Queue()
 
+    def emit(event):
+    if event.get("type") == "context":
+        event = {
+            **event,
+            "events": list(sessions[run_id].events),
+        }
+
+    queue.put_nowait(event)
+
     hooks = PanelHooks(
         sessions[run_id],
-        queue.put_nowait,
+        emit,
     )
 
     async def work():
@@ -697,6 +706,10 @@ async def run(
     return StreamingResponse(
         events(),
         media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+        },
     )
 
 

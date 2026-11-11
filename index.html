@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Congressional Deep Research</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+  <style>
+    :root {
+      --background: #F4F5F7;
+      --paper: #FFFFFF;
+      --text: #0F1623;
+      --muted: #333D4D;
+      --border: #D3D8E2;
+      --accent: #0A3161;
+      --red: #B31942;
+      --navy: #0A3161;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 78px 22px 22px;
+      background-color: var(--background);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' fill='%23DDE1EA'%3E%3Cg transform='scale(3)'%3E%3Cpolygon points='20,12 21.82,17.49 27.61,17.53 22.95,20.96 24.7,26.47 20,23.1 15.3,26.47 17.05,20.96 12.39,17.53 18.18,17.49'/%3E%3Cpolygon transform='translate(40 40)' points='20,12 21.82,17.49 27.61,17.53 22.95,20.96 24.7,26.47 20,23.1 15.3,26.47 17.05,20.96 12.39,17.53 18.18,17.49'/%3E%3C/g%3E%3C/svg%3E");
+      color: var(--text);
+      font-family: "Times New Roman", Times, serif;
+      font-size: 14px;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 14px;
+      background: linear-gradient(90deg, var(--red) 50%, var(--navy) 50%);
+      z-index: 9999;
+    }
+
+    main {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .logo {
+      flex: none;
+      width: 64px;
+      height: 64px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: bold;
+      margin: 0 0 3px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    section {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      padding: 15px 18px;
+    }
+
+    h2 {
+      font-size: 12px;
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin: 0 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    #question {
+      display: block;
+      width: 100%;
+      padding: 9px 0;
+      margin-top: 5px;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      outline: none;
+      color: var(--text);
+      background: transparent;
+      font-family: inherit;
+      font-size: 16px;
+    }
+
+    #question:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    button {
+      margin-top: 13px;
+      padding: 10px 20px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 0;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--red);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #status {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    #activity {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 230px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    #activity li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ECEEF1;
+      overflow-wrap: anywhere;
+    }
+
+    #activity li:last-child {
+      border-bottom: none;
+    }
+
+    #activity .agent {
+      font-weight: bold;
+      color: var(--accent);
+      margin-right: 5px;
+    }
+
+    #activity .error {
+      color: var(--red);
+    }
+
+    .empty {
+      color: var(--muted);
+    }
+
+    #output {
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    #output h1 {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 16px 0 9px;
+    }
+
+    #output h2 {
+      display: block;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--text);
+      text-transform: none;
+      letter-spacing: 0;
+      margin: 18px 0 8px;
+    }
+
+    #output h3 {
+      font-size: 16px;
+      margin: 14px 0 7px;
+    }
+
+    #output p {
+      margin: 8px 0;
+    }
+
+    #output ul,
+    #output ol {
+      padding-left: 22px;
+      margin: 8px 0;
+    }
+
+    #output a {
+      color: var(--accent);
+    }
+
+    #output table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+      display: block;
+      overflow-x: auto;
+    }
+
+    #output th,
+    #output td {
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+
+    #output th {
+      background: #F1F3F5;
+    }
+
+    #output pre {
+      overflow-x: auto;
+      background: #F1F3F5;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    /* Professor's context-panel.js creates the timeline itself.
+       These styles customize its appearance and compact dimensions. */
+
+    :root {
+      --context-width: min(46vw, 680px);
+    }
+
+    body {
+      margin-right: var(--context-width);
+    }
+
+    #context-panel {
+      background: #F9FAFB !important;
+      color: var(--text) !important;
+      border-left: 1px solid var(--border) !important;
+      padding: 14px !important;
+      font-family: "Times New Roman", Times, serif !important;
+      font-size: 12px !important;
+    }
+
+    #context-panel .ctx-head {
+      background: #F9FAFB !important;
+      color: var(--muted) !important;
+      font-family: "Times New Roman", Times, serif !important;
+      font-size: 12px !important;
+    }
+
+    #context-panel .ctx-head.active {
+      color: var(--text) !important;
+      border-top-color: var(--red) !important;
+    }
+
+    #context-panel .context-msg {
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 6px 8px;
+      margin-bottom: 6px;
+    }
+
+    #context-panel .context-msg.assistant {
+      border-left-color: var(--navy);
+    }
+
+    #context-panel .context-msg.tool {
+      border-left-color: var(--red);
+    }
+
+    #context-panel .context-msg.user {
+      border-left-color: #8A94A6;
+    }
+
+    #context-panel .ctx-note {
+      color: var(--muted);
+      font-family: inherit;
+    }
+
+    #context-panel .ctx-grid {
+      grid-template-columns:
+        repeat(var(--ctx-cols, 1), minmax(180px, 1fr));
+      column-gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        margin-right: 0;
+        padding: 78px 14px 14px;
+      }
+
+      main {
+        max-width: 100%;
+      }
+
+      #context-panel {
+        position: static !important;
+        width: 100% !important;
+        height: 450px;
+        margin-top: 16px;
+        border: 1px solid var(--border) !important;
+        overflow: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar"></div>
+
+  <main>
+    <header>
+      <div>
+        <h1>Congressional Deep Research</h1>
+        <p class="subtitle">
+          A multi-agent research system investigating campaign
+          contributions, donor affiliations, and FY2027 earmark requests.
+        </p>
+      </div>
+
+      <svg class="logo" role="img" aria-label="Capitol dome logo"
+           viewBox="0 0 64 64" fill="#0A3161">
+        <rect x="31" y="2" width="2" height="9"/>
+        <path d="M14 30A18 18 0 0 1 50 30Z"/>
+        <rect x="16" y="30" width="32" height="7"/>
+        <rect x="8" y="37" width="48" height="4"/>
+        <rect x="10" y="41" width="4" height="11"/>
+        <rect x="20" y="41" width="4" height="11"/>
+        <rect x="30" y="41" width="4" height="11"/>
+        <rect x="40" y="41" width="4" height="11"/>
+        <rect x="50" y="41" width="4" height="11"/>
+        <rect x="4" y="52" width="56" height="5" fill="#B31942"/>
+      </svg>
+    </header>
+
+    <section>
+      <h2>Research Task</h2>
+
+      <form id="task">
+        <label for="question">Question</label>
+
+        <input
+          id="question"
+          type="text"
+          placeholder="e.g. Analyze Nancy Pelosi's campaign donors and FY2027 earmark requests"
+          autocomplete="off"
+          required
+        >
+
+        <button id="run" type="submit">
+          Run Research
+        </button>
+      </form>
+    </section>
+
+    <section>
+      <h2>
+        Agent Activity
+        <span id="status">idle</span>
+      </h2>
+
+      <ol id="activity">
+        <li class="empty">
+          Agent activity will appear here when research starts.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Research Report</h2>
+
+      <div id="output" class="empty">
+        Your completed research report will appear here.
+      </div>
+    </section>
+  </main>
+
+  <!--
+    The professor's script automatically creates the
+    right-side agent timeline. Do not manually create
+    another element with id="context-panel".
+  -->
+  <script src="/context-panel.js"></script>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    let source = null;
+    let runId = null;
+    let finished = false;
+
+    function addActivity(agent, message, cls = "") {
+      const list = $("activity");
+
+      if (list.querySelector(".empty")) {
+        list.replaceChildren();
+      }
+
+      const item = document.createElement("li");
+      item.className = cls;
+
+      if (agent) {
+        const name = document.createElement("span");
+        name.className = "agent";
+        name.textContent = agent + " ";
+        item.appendChild(name);
+      }
+
+      item.appendChild(
+        document.createTextNode(String(message || ""))
+      );
+
+      list.appendChild(item);
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function showOutput(markdown) {
+      const output = $("output");
+      output.classList.remove("empty");
+
+      if (
+        typeof marked !== "undefined" &&
+        typeof DOMPurify !== "undefined"
+      ) {
+        output.innerHTML = DOMPurify.sanitize(
+          marked.parse(String(markdown || ""))
+        );
+      } else {
+        output.textContent = markdown || "";
+      }
+    }
+
+    function finish(status) {
+      if (finished) return;
+
+      finished = true;
+      $("status").textContent = status;
+      $("run").disabled = false;
+      $("run").textContent = "Run Research";
+
+      if (source) {
+        source.close();
+        source = null;
+      }
+    }
+
+    function resetResearch() {
+      finished = false;
+      runId = null;
+
+      $("activity").innerHTML =
+        '<li class="empty">Waiting for agent activity...</li>';
+
+      $("output").className = "empty";
+      $("output").textContent =
+        "Your completed research report will appear here.";
+
+      $("status").textContent = "running";
+      $("run").disabled = true;
+      $("run").textContent = "Researching...";
+
+      if (typeof resetContext === "function") {
+        resetContext();
+      }
+    }
+
+    $("task").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const question = $("question").value.trim();
+
+      if (!question) return;
+
+      if (source) {
+        source.close();
+        source = null;
+      }
+
+      resetResearch();
+
+      /*
+       * Keep the original /run interface.
+       * If your backend still requires a url parameter,
+       * the empty string satisfies the query parameter,
+       * but the backend must support research without
+       * a Wikipedia starting URL.
+       */
+      const params = new URLSearchParams({
+        question: question,
+        url: ""
+      });
+
+      source = new EventSource("/run?" + params.toString());
+
+      source.onmessage = function (message) {
+        if (finished) return;
+
+        let event;
+
+        try {
+          event = JSON.parse(message.data);
+        } catch (error) {
+          addActivity(
+            "",
+            "Could not parse server event.",
+            "error"
+          );
+          return;
+        }
+
+        if (event.type === "start") {
+          runId = event.run_id;
+          $("status").textContent = "running";
+          addActivity("System", "Research started.");
+
+        } else if (event.type === "context") {
+          if (
+            runId &&
+            typeof showContext === "function"
+          ) {
+            showContext(runId);
+          }
+
+        } else if (event.type === "activity") {
+          addActivity(
+            event.agent || "Agent",
+            event.text || ""
+          );
+
+        } else if (event.type === "done") {
+          showOutput(event.markdown || "");
+          addActivity("System", "Research completed.");
+          finish("done");
+
+        } else if (event.type === "error") {
+          addActivity(
+            "Error",
+            event.message || "Research failed.",
+            "error"
+          );
+          finish("failed");
+        }
+      };
+
+      source.onerror = function () {
+        if (finished) return;
+
+        addActivity(
+          "Error",
+          "Lost connection to the research server.",
+          "error"
+        );
+
+        finish("failed");
+      };
+    });
+  </script>
+</body>
+</html>

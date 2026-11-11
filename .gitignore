@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+
+# Mac and editor files
+.DS_Store
+.vscode/
+.idea/
+
+# Raw and preprocessing data
+data/
+data_pre_cleaning/
+
+# Exclude cleaned CSVs by default
+data_cleaned/*.csv
+
+# Include small runtime datasets
+!data_cleaned/house_representative_analysis_2027.csv
+!data_cleaned/earmarks_by_bioguide.csv
+!data_cleaned/earmarks_unresolved.csv
+!data_cleaned/house_candidate_lookup_2026.csv
+!data_cleaned/house_pac_summary_2026.csv
+!data_cleaned/house_pac_transactions_2026.csv

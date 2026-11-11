@@ -443,6 +443,18 @@ REPORT REQUIREMENTS:
    - Distinguish documented facts from possible relationships.
    - If the evidence is insufficient, explicitly explain what cannot be established.
 
+10. Format tables for readability.
+    - PAC contribution tables must contain only these columns:
+      Rank | PAC Name | FEC Committee ID | Net Contributions | Transactions
+    - Do not include Source Citation, Committee Type, Connected Organization,
+      or Organization Type as separate columns in PAC tables.
+    - Put one source citation immediately below each table, including
+      the dataset names, candidate ID, and reporting cycle.
+    - Preserve the actual FEC committee IDs in every row.
+    - Discuss connected organizations and committee classifications
+      in prose only when relevant to the user's question.
+    - Keep tables compact and easy to read on smaller screens.
+
 For multi-agent research, synthesize findings across researchers rather than simply concatenating their responses.
 
 If the findings contain conflicting figures, ambiguous identities, unresolved project attribution, or incomplete research, explain those limitations instead of guessing.

@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,6 +19,7 @@
       --accent: #0A3161;
       --red: #B31942;
       --navy: #0A3161;
+      --context-width: min(46vw, 680px);
     }
 
     * {
@@ -26,6 +28,7 @@
 
     body {
       margin: 0;
+      margin-right: var(--context-width);
       padding: 78px 22px 22px;
       background-color: var(--background);
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' fill='%23DDE1EA'%3E%3Cg transform='scale(3)'%3E%3Cpolygon points='20,12 21.82,17.49 27.61,17.53 22.95,20.96 24.7,26.47 20,23.1 15.3,26.47 17.05,20.96 12.39,17.53 18.18,17.49'/%3E%3Cpolygon transform='translate(40 40)' points='20,12 21.82,17.49 27.61,17.53 22.95,20.96 24.7,26.47 20,23.1 15.3,26.47 17.05,20.96 12.39,17.53 18.18,17.49'/%3E%3C/g%3E%3C/svg%3E");
@@ -40,13 +43,18 @@
       left: 0;
       right: 0;
       height: 14px;
-      background: linear-gradient(90deg, var(--red) 50%, var(--navy) 50%);
+      background: linear-gradient(
+        90deg,
+        var(--red) 50%,
+        var(--navy) 50%
+      );
       z-index: 9999;
     }
 
     main {
       width: 100%;
       max-width: 760px;
+      min-width: 0;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -80,6 +88,7 @@
     }
 
     section {
+      min-width: 0;
       border: 1px solid var(--border);
       background: var(--paper);
       padding: 15px 18px;
@@ -183,10 +192,14 @@
       color: var(--muted);
     }
 
+    /* RESEARCH REPORT */
+
     #output {
+      min-width: 0;
+      max-width: 100%;
       font-size: 15px;
       line-height: 1.6;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
     }
 
     #output h1 {
@@ -224,24 +237,8 @@
       color: var(--accent);
     }
 
-    #output table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      margin: 12px 0;
-      display: block;
-      overflow-x: auto;
-    }
-
-    #output th,
-    #output td {
-      padding: 7px 9px;
-      border: 1px solid var(--border);
-      text-align: left;
-    }
-
-    #output th {
-      background: #F1F3F5;
+    #output code {
+      font-size: 0.92em;
     }
 
     #output pre {
@@ -251,16 +248,91 @@
       font-size: 14px;
     }
 
-    /* Professor's context-panel.js creates the timeline itself.
-       These styles customize its appearance and compact dimensions. */
+    /* READABLE, HORIZONTALLY SCROLLABLE TABLES */
 
-    :root {
-      --context-width: min(46vw, 680px);
+    #output .table-scroll {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      margin: 14px 0;
+      border: 1px solid var(--border);
+      -webkit-overflow-scrolling: touch;
     }
 
-    body {
-      margin-right: var(--context-width);
+    #output table {
+      width: max-content;
+      min-width: 100%;
+      max-width: none;
+      border-collapse: collapse;
+      table-layout: auto;
+      font-size: 14px;
+      line-height: 1.45;
+      margin: 0;
     }
+
+    #output th,
+    #output td {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+      word-break: normal;
+      overflow-wrap: normal;
+      hyphens: none;
+    }
+
+    #output th {
+      background: #F1F3F5;
+      color: var(--text);
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    #output td {
+      background: white;
+    }
+
+    #output tbody tr:nth-child(even) td {
+      background: #FAFBFC;
+    }
+
+    #output tbody tr:hover td {
+      background: #F0F4FA;
+    }
+
+    /* Keep IDs, numbers, and short values together */
+    #output td code {
+      white-space: nowrap;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    /* Long PAC names wrap at spaces, not within words */
+    #output td {
+      min-width: 85px;
+    }
+
+    #output td:nth-child(2) {
+      min-width: 220px;
+      max-width: 340px;
+      white-space: normal;
+    }
+
+    #output td:first-child {
+      min-width: 70px;
+      white-space: nowrap;
+    }
+
+    /* Allow longer organization and citation fields */
+    #output td:nth-child(n+6) {
+      min-width: 160px;
+      max-width: 350px;
+      white-space: normal;
+    }
+
+    /* AGENT CONTEXT PANEL */
 
     #context-panel {
       background: #F9FAFB !important;
@@ -313,6 +385,8 @@
       column-gap: 10px;
     }
 
+    /* MOBILE */
+
     @media (max-width: 900px) {
       body {
         margin-right: 0;
@@ -332,6 +406,29 @@
         overflow: auto;
       }
     }
+
+    @media (max-width: 600px) {
+      section {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      #output {
+        font-size: 14px;
+      }
+
+      #output table {
+        font-size: 13px;
+      }
+
+      #output th,
+      #output td {
+        padding: 9px 11px;
+      }
+    }
   </style>
 </head>
 
@@ -348,8 +445,13 @@
         </p>
       </div>
 
-      <svg class="logo" role="img" aria-label="Capitol dome logo"
-           viewBox="0 0 64 64" fill="#0A3161">
+      <svg
+        class="logo"
+        role="img"
+        aria-label="Capitol dome logo"
+        viewBox="0 0 64 64"
+        fill="#0A3161"
+      >
         <rect x="31" y="2" width="2" height="9"/>
         <path d="M14 30A18 18 0 0 1 50 30Z"/>
         <rect x="16" y="30" width="32" height="7"/>
@@ -405,11 +507,7 @@
     </section>
   </main>
 
-  <!--
-    The professor's script automatically creates the
-    right-side agent timeline. Do not manually create
-    another element with id="context-panel".
-  -->
+  <!-- The context-panel.js script creates the agent timeline. -->
   <script src="/context-panel.js"></script>
 
   <script>
@@ -455,6 +553,17 @@
         output.innerHTML = DOMPurify.sanitize(
           marked.parse(String(markdown || ""))
         );
+
+        // Wrap each rendered Markdown table in a
+        // horizontally scrollable container.
+        output.querySelectorAll("table").forEach((table) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "table-scroll";
+
+          table.parentNode.insertBefore(wrapper, table);
+          wrapper.appendChild(table);
+        });
+
       } else {
         output.textContent = markdown || "";
       }
@@ -508,13 +617,6 @@
 
       resetResearch();
 
-      /*
-       * Keep the original /run interface.
-       * If your backend still requires a url parameter,
-       * the empty string satisfies the query parameter,
-       * but the backend must support research without
-       * a Wikipedia starting URL.
-       */
       const params = new URLSearchParams({
         question: question,
         url: ""

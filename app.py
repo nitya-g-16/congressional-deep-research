@@ -87,13 +87,19 @@ INDIVIDUAL:
 - This is not the complete election cycle.
 - Employer and occupation fields are self-reported.
 
+
 PAC:
 - Call get_top_pac_contributors exactly once.
 - The tool uses locally cleaned FEC contribution data, not a live API.
 - Report top PAC contributors and net contributions for the available cycle.
+- Preserve the contributor_committee_id for EVERY PAC returned.
+- Preserve the candidate_id and recipient_committee_id from the tool output.
+- Preserve the exact source dataset names and election cycle.
+- Include committee IDs alongside PAC names and contribution amounts.
+- Preserve transaction counts, warnings, and errors.
 - Clearly distinguish PAC contributions from individual donations.
-- Preserve the tool's data-quality warnings and errors.
 - Do not describe provisional totals as audited totals.
+- Do not invent missing committee IDs or transaction identifiers.
 
 EARMARK:
 - Call get_earmark_projects.
@@ -409,6 +415,10 @@ REPORT REQUIREMENTS:
    - If external verification has not been performed, state that clearly.
    - If the findings do not identify a source, explicitly note that the source could not be established rather than inventing a citation.
    - End with a "Sources and Limitations" section identifying the datasets used, their coverage periods, and relevant limitations.
+   - For PAC contribution tables, include a "FEC Committee ID" column using contributor_committee_id from the research findings.
+   - Cite PAC tables using the source datasets (itpas2.txt, cm.txt, cn.txt), the candidate_id, and the contributor committee IDs.
+   - Do not substitute the recipient_committee_id for a contributor_committee_id.
+   - Preserve committee IDs exactly as returned by the PAC research tool.
 
 8. Organize the report dynamically.
    - Use a descriptive title.

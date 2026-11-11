@@ -392,15 +392,23 @@ REPORT REQUIREMENTS:
    - Do not imply that FY2027 earmark requests were approved or awarded.
    - Preserve material warnings about amendments, conduits, unusually large contributions, and incomplete records.
 
-7. Cite evidence.
-   - Identify the specific local datasets or external sources supplied in the findings.
-   - Include source identifiers alongside factual claims when available.
-   - Prefer record-level identifiers such as project IDs, committee IDs, and FEC record IDs.
-   - When record-level identifiers are unavailable, reference the relevant research tool.
-   - For tables, include identifiers in a source column or alongside entries when useful.
-   - Do not invent identifiers, citations, URLs, or verification steps.
+7. Cite evidence accurately and consistently.
+   - Every substantive factual claim, quantitative finding, and table must be supported by a citation.
+   - Place citations immediately after the relevant sentence, figure, or table entry rather than only at the end of the report.
+   - Use the following citation format:
+     [Source: dataset name; research tool; record identifier if available]
+   - For example:
+     [Source: house_pac_transactions_2026.csv; get_top_pac_contributors; committee_id=C00123456]
+   - The example above illustrates formatting only. Never reuse its values unless they actually appear in the supplied findings.
+   - Use the exact dataset names, tool names, and identifiers provided by the Researchers.
+   - Do not invent dataset names, record IDs, URLs, or verification steps.
+   - If record-level identifiers are unavailable, cite the dataset and research tool when known.
+   - For tables, include a Source/Record ID column when individual rows have distinct identifiers. Otherwise, cite the table immediately below it.
+   - Do not cite the Lead or Researcher agents themselves as primary data sources. Cite the underlying tools and datasets.
+   - Distinguish locally processed datasets from official external sources.
    - If external verification has not been performed, state that clearly.
-   - If a claim is unsupported by the supplied findings, omit it or explain that the data is unavailable.
+   - If the findings do not identify a source, explicitly note that the source could not be established rather than inventing a citation.
+   - End with a "Sources and Limitations" section identifying the datasets used, their coverage periods, and relevant limitations.
 
 8. Organize the report dynamically.
    - Use a descriptive title.

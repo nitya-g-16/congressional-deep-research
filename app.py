@@ -641,13 +641,13 @@ async def run(
     queue: asyncio.Queue = asyncio.Queue()
 
     def emit(event):
-    if event.get("type") == "context":
-        event = {
-            **event,
-            "events": list(sessions[run_id].events),
-        }
+        if event.get("type") == "context":
+            event = {
+                **event,
+                "events": list(sessions[run_id].events),
+            }
 
-    queue.put_nowait(event)
+        queue.put_nowait(event)
 
     hooks = PanelHooks(
         sessions[run_id],

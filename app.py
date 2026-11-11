@@ -419,6 +419,11 @@ REPORT REQUIREMENTS:
    - Cite PAC tables using the source datasets (itpas2.txt, cm.txt, cn.txt), the candidate_id, and the contributor committee IDs.
    - Do not substitute the recipient_committee_id for a contributor_committee_id.
    - Preserve committee IDs exactly as returned by the PAC research tool.
+   - Use the exact tool function names supplied in the research findings.
+   - Never rename, paraphrase, or invent tool names in citations.
+   - For earmark findings, cite get_earmark_projects when that is the actual source.
+   - For industry comparisons, cite analyze_industry_overlap when that is the actual source.
+   - Never invent dataset labels such as local_earmark_database or industry_overlap_analysis unless those names are explicitly provided by the tools.
 
 8. Organize the report dynamically.
    - Use a descriptive title.

@@ -17,7 +17,8 @@ from agents import (
 )
 from agents.extensions.models.litellm_model import LitellmModel
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from fastapi.responses import FileResponse, StreamingResponse
 
 from congress_tools import (
@@ -648,6 +649,44 @@ async def deep_research(
     return str(report.final_output)
 
 
+class ChatRequest(BaseModel):
+    # Accept either field so the endpoint is easy to test from Swagger or curl.
+    message: str | None = None
+    question: str | None = None
+    representative: str = ""
+
+
+class RecordingPanelHooks(PanelHooks):
+    """Record actual SDK function calls from every agent, including sub-agents."""
+
+    def __init__(self, contexts: AgentContexts, emit):
+        super().__init__(contexts, emit)
+        self.tool_calls: list[dict] = []
+
+    async def on_llm_end(self, context, agent, response):
+        # Preserve the existing context-panel behavior.
+        await super().on_llm_end(context, agent, response)
+        for item in response.output:
+            if hasattr(item, "model_dump"):
+                data = item.model_dump(exclude_none=True)
+            elif isinstance(item, dict):
+                data = item
+            else:
+                continue
+            if data.get("type") != "function_call":
+                continue
+            raw_args = data.get("arguments", "{}")
+            try:
+                args = json.loads(raw_args) if isinstance(raw_args, str) else raw_args
+            except (TypeError, ValueError):
+                args = raw_args
+            self.tool_calls.append({
+                "agent": agent.name,
+                "name": data.get("name"),
+                "arguments": args,
+            })
+
+
 sessions: dict[str, AgentContexts] = {}
 
 app = FastAPI()
@@ -661,6 +700,26 @@ def index():
         HERE / "index.html",
         headers={"Cache-Control": "no-cache"},
     )
+
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    """Project 1-style JSON response, including calls from sub-agents."""
+    question = (request.message or request.question or "").strip()
+    if not question:
+        raise HTTPException(status_code=422, detail="Provide message or question")
+
+    contexts = AgentContexts()
+    hooks = RecordingPanelHooks(contexts, lambda event: None)
+    try:
+        answer = await deep_research(question, request.representative, hooks)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Research failed: {type(exc).__name__}: {exc}") from exc
+
+    return {
+        "response": answer,
+        "tool_calls": hooks.tool_calls,
+    }
 
 
 @app.get("/run")

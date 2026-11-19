@@ -192,6 +192,53 @@
       color: var(--muted);
     }
 
+    /* PROJECT INTRODUCTION AND EXAMPLE QUESTIONS */
+
+    .project-intro {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .project-intro p {
+      margin: 0 0 9px;
+    }
+
+    .project-intro p:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-intro strong {
+      color: var(--text);
+    }
+
+    .example-queries {
+      margin-top: 16px;
+    }
+
+    .example-queries label {
+      margin-bottom: 8px;
+    }
+
+    .example-query {
+      display: block;
+      width: 100%;
+      margin: 6px 0;
+      padding: 9px 12px;
+      background: #F7F9FC;
+      color: var(--navy);
+      border: 1px solid var(--border);
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .example-query:hover {
+      background: #E8EDF5;
+      color: var(--navy);
+      border-color: var(--navy);
+    }
+
     /* RESEARCH REPORT */
 
     #output {
@@ -302,14 +349,12 @@
       background: #F0F4FA;
     }
 
-    /* Keep IDs, numbers, and short values together */
     #output td code {
       white-space: nowrap;
       overflow-wrap: normal;
       word-break: normal;
     }
 
-    /* Long PAC names wrap at spaces, not within words */
     #output td {
       min-width: 85px;
     }
@@ -325,7 +370,6 @@
       white-space: nowrap;
     }
 
-    /* Allow longer organization and citation fields */
     #output td:nth-child(n+6) {
       min-width: 160px;
       max-width: 350px;
@@ -466,6 +510,32 @@
     </header>
 
     <section>
+      <h2>About This Research Agent</h2>
+      <div class="project-intro">
+        <p>
+          <strong>What it explores:</strong>
+          Congressional campaign contributions, political action committee
+          (PAC) donors, donor affiliations, and FY2027 earmark requests.
+          Multiple research agents investigate the available data and
+          compile findings into a research report.
+        </p>
+        <p>
+          <strong>Who it's for:</strong>
+          Students, journalists, researchers, and anyone interested in
+          congressional funding and campaign finance transparency.
+        </p>
+        <p>
+          <strong>How to use it:</strong>
+          Enter a question about a member of Congress, or select an
+          example below to fill in the question box. Click
+          <strong>Run Research</strong> to start the investigation.
+          Agent activity appears as the system works, followed by
+          a completed research report.
+        </p>
+      </div>
+    </section>
+
+    <section>
       <h2>Research Task</h2>
 
       <form id="task">
@@ -483,6 +553,22 @@
           Run Research
         </button>
       </form>
+
+      <div class="example-queries" aria-label="Example research questions">
+        <label>Try an example question:</label>
+
+        <button class="example-query" type="button">
+          Who are Nancy Pelosi's top PAC contributors in 2026?
+        </button>
+
+        <button class="example-query" type="button">
+          What is Nancy Pelosi's FY2027 Pier 15 Modernization &amp; Upgrades earmark request?
+        </button>
+
+        <button class="example-query" type="button">
+          Are there verified campaign contribution connections to organizations associated with Nancy Pelosi's FY2027 earmark requests?
+        </button>
+      </div>
     </section>
 
     <section>
@@ -516,6 +602,14 @@
     let source = null;
     let runId = null;
     let finished = false;
+
+    // Fill the existing input when an example is clicked.
+    document.querySelectorAll(".example-query").forEach((button) => {
+      button.addEventListener("click", () => {
+        $("question").value = button.textContent.trim().replace(/\s+/g, " ");
+        $("question").focus();
+      });
+    });
 
     function addActivity(agent, message, cls = "") {
       const list = $("activity");

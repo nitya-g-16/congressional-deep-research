@@ -14,8 +14,6 @@ Those investigating campaign finance and government spending, political research
 
 The goal is to make complex political-finance datasets more accessible and allow users to investigate relationships between congressional representatives, campaign donors, and federal funding recipients.
 
-The system is a research tool and does not determine whether any political activity is improper or unlawful.
-
 ## System Architecture
 
 The application follows a multi-agent architecture:
@@ -34,8 +32,6 @@ The application follows a multi-agent architecture:
 | `get_donor_affiliations` | Investigates organizational affiliations of potential donors |
 | `analyze_industry_overlap` | Examines overlap between contribution industries and earmark-related sectors |
 
-The system uses tool-augmented research rather than relying exclusively on the model's training data.
-
 ## Data Sources and Loading
 
 ### 1. Federal Election Commission (FEC)
@@ -44,7 +40,7 @@ The system uses tool-augmented research rather than relying exclusively on the m
 
 The project uses FEC bulk campaign-finance data to identify candidates, political committees, and reported PAC contributions.
 
-Relevant files include:
+Relevant files:
 
 | File | Contents |
 |---|---|
@@ -128,7 +124,7 @@ These amounts reflect the tool's contribution aggregation and should be interpre
 - FEC `cm.txt`: Committee information
 - FEC `cn.txt`: Candidate information
 
-#### Baseline Model Answer (No Tools, No System Prompt)
+#### Baseline Model Answer
 
 The baseline responded:
 
@@ -176,7 +172,7 @@ The $1.85 million figure should not automatically be described as enacted fundin
 
 **Underlying data:** Locally loaded FY2027 congressional earmark dataset, project ID `4792`.
 
-#### Baseline Model Answer (No Tools, No System Prompt)
+#### Baseline Model Answer
 
 The baseline responded:
 
@@ -237,7 +233,7 @@ The agent therefore avoids asserting a financial relationship without adequate s
 - FY2027 earmark dataset, project ID `4792`
 - FEC campaign-finance records
 
-#### Baseline Model Answer (No Tools, No System Prompt)
+#### Baseline Model Answer
 
 The baseline began by stating that the FY2027 earmark cycle did not yet exist.
 
@@ -258,7 +254,7 @@ The baseline concluded:
 
 > Direct Connections: None from the Port or the Exploratorium as institutions. Indirect Connections: Significant. Multiple members of the Exploratorium's leadership and board are verified, long-term donors to Nancy Pelosi's campaigns.
 
-However, the baseline did not provide matching FEC transaction records or citations establishing these individual connections.
+The baseline did not provide matching FEC transaction records or citations establishing these individual connections.
 
 ---
 
